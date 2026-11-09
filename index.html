@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HF Antenna Planner</title>
+<meta name="description" content="Excel workbook that picks an HF antenna, height, feed method and balun/unun for your operating goal. By W4NEM.">
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --text: #1b2430; --muted: #5a6573;
+    --accent: #1f4e78; --accent-text: #ffffff; --border: #dde2e8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10151c; --card: #18202a; --text: #e6ebf1; --muted: #9aa6b4;
+      --accent: #4f8cc9; --accent-text: #0b1118; --border: #2a3542;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 40px 16px 56px; }
+  .call { color: var(--muted); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 6px; }
+  h1 { font-size: 30px; line-height: 1.2; margin: 0 0 12px; }
+  .lede { color: var(--muted); margin: 0 0 24px; }
+  .btn {
+    display: inline-block; background: var(--accent); color: var(--accent-text);
+    text-decoration: none; font-weight: 600; padding: 12px 20px; border-radius: 8px;
+  }
+  .btn:hover { filter: brightness(1.08); }
+  .note { font-size: 14px; color: var(--muted); margin: 10px 0 32px; }
+  section { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  h2 { font-size: 18px; margin: 0 0 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  td { padding: 8px 0; border-top: 1px solid var(--border); vertical-align: top; }
+  tr:first-child td { border-top: 0; }
+  td:first-child { font-weight: 600; width: 38%; padding-right: 12px; }
+  ol { margin: 0; padding-left: 20px; }
+  li { margin-bottom: 6px; }
+  footer { color: var(--muted); font-size: 14px; margin-top: 28px; }
+  @media (max-width: 520px) {
+    td { display: block; width: 100% !important; padding: 2px 0; }
+    tr td:first-child { padding-top: 10px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <p class="call">W4NEM</p>
+  <h1>HF Antenna &amp; Transformer Planner</h1>
+  <p class="lede">An Excel workbook that picks an HF antenna, mounting height, feed method and feedpoint transformer (balun/unun) for your operating goal, then gives you a build checklist and a list of things to avoid.</p>
+
+  <a class="btn" href="antenna_selection_tool.xlsx" download>Download the workbook (.xlsx)</a>
+  <p class="note">Open it in Microsoft Excel or LibreOffice Calc. The dropdowns and formulas don't work in browser previews.</p>
+
+  <section>
+    <h2>Quick start</h2>
+    <ol>
+      <li><strong>Transformer Calculator:</strong> enter station power, safety margin, system impedance and acceptable SWR (once).</li>
+      <li><strong>Antenna Selector:</strong> pick a goal from the dropdown and enter your operating frequency.</li>
+      <li>Read the recommendation. The yellow Summary row is the one-line answer.</li>
+      <li>Check <strong>What to Avoid</strong>, then work through <strong>Build Plan</strong>.</li>
+      <li>After install, measure feedpoint impedance with an analyzer and enter it to confirm the transformer.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>What's inside</h2>
+    <table>
+      <tr><td>How to Use</td><td>Work instruction. Start here.</td></tr>
+      <tr><td>Antenna Selector</td><td>Goal, frequency and optional antenna type in; full recommendation out.</td></tr>
+      <tr><td>Build Plan</td><td>Step-by-step checklist with a Done? column.</td></tr>
+      <tr><td>What to Avoid</td><td>Poor choices for your goal, with a warning if your pick is a poor fit.</td></tr>
+      <tr><td>Transformer Calculator</td><td>Balun/unun sizing for any feed method or measured impedance.</td></tr>
+      <tr><td>Band Heights</td><td>Center frequencies and height targets for 80 / 60 / 40 m NVIS.</td></tr>
+      <tr><td>Band Calculations</td><td>Per-band wire lengths, heights, reflector length and estimated SWR.</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Good to know</h2>
+    <ol>
+      <li>All lengths, heights and impedances are rules of thumb. Cut wire long, then trim for SWR.</li>
+      <li>Measured impedances give the most reliable transformer choice.</li>
+      <li>Keep antennas clear of power lines. End-fed wire ends carry high RF voltage. Observe RF exposure limits at high power.</li>
+    </ol>
+  </section>
+
+  <footer>73 de W4NEM</footer>
+</main>
+</body>
+</html>
