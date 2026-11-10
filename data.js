@@ -195,6 +195,10 @@ const HAM_BANDS = [
   ["12 m", 24.89, 24.99], ["10 m", 28.0, 29.7], ["6 m", 50.0, 54.0]
 ];
 
+// NVIS needs a band below the critical frequency (foF2); above 40 m it rarely works.
+const NVIS_GOAL = "Local / regional (NVIS)";
+const NVIS_MAX_MHZ = 7.3;
+
 // One-tap band buttons on the frequency display (typical center frequencies, MHz).
 const BAND_PICKS = [
   ["160", 1.9], ["80", 3.75], ["60", 5.357], ["40", 7.15], ["30", 10.125], ["20", 14.2],
@@ -202,7 +206,7 @@ const BAND_PICKS = [
 ];
 
 const DEFAULT_SETTINGS = {
-  power: 1500,          // station power, W PEP
+  power: 100,           // station power, W PEP
   margin: 2,            // transformer power safety margin (×)
   sysZ: 50,             // system impedance, Ω
   okSWR: 1.5,           // acceptable SWR without an impedance transformer

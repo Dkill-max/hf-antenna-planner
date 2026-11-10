@@ -63,7 +63,8 @@ const Calc = (() => {
       z, zIsMeasured: Number.isFinite(measuredZ) && measuredZ > 0,
       swrNo, ratio, transformer, power, core: core(freq), choke: fr.choke,
       support: pick("support"), feedline: pick("feedline"), ground: pick("ground"), tuning: pick("tuning"),
-      band: hamBand(freq)
+      band: hamBand(freq),
+      nvisTooHigh: g.goal === NVIS_GOAL && freq > NVIS_MAX_MHZ
     };
   }
 

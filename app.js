@@ -1,7 +1,7 @@
 // HF Antenna Planner — UI
 "use strict";
 
-const APP_VERSION = "1.1.2";
+const APP_VERSION = "1.2.0";
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const n0 = (x) => Math.round(x).toLocaleString("en-US");
@@ -112,13 +112,16 @@ function renderAntenna(r) {
     const on = r.band !== null && r.band === Calc.hamBand(Number(b.dataset.mhz));
     b.setAttribute("aria-pressed", on ? "true" : "false");  });
   $("d-answer").innerHTML = `<strong>${esc(r.antenna)}</strong><br>${esc(r.heightShort)}${r.heightShort.endsWith("ft") ? " high" : ""} · ${esc(r.transformer)}` +
-    (r.fit === "Poor" ? `<br>⚠ Poor fit for this goal` : "");
+    (r.nvisTooHigh ? `<span class="d-warn">⚠ NVIS rarely works on ${esc(r.band || "this frequency")}. Pick 80, 60 or 40 m.</span>` : "") +
+    (r.fit === "Poor" ? `<span class="d-warn">⚠ Poor fit for this goal</span>` : "");
 
   const w = $("fit-warning");
-  if (r.fit === "Poor") {
-    w.hidden = false;
-    w.innerHTML = `⚠ ${esc(state.override)} is a poor fit for ${esc(r.goal.goal)}. <a href="#" data-goto="build">See what to avoid</a>`;
-  } else w.hidden = true;
+  const msgs = [];
+  if (r.nvisTooHigh) msgs.push(`⚠ ${esc(r.band || state.freq.toFixed(3) + " MHz")} is too high for NVIS: signals pass through the ionosphere instead of coming back nearby. Use 80, 60 or 40 m. ` +
+    `<button type="button" class="link-btn" data-setfreq="7.15">Switch to 40 m</button> <button type="button" class="link-btn" data-setfreq="3.75">Switch to 80 m</button>`);
+  if (r.fit === "Poor") msgs.push(`⚠ ${esc(state.override)} is a poor fit for ${esc(r.goal.goal)}. <a href="#" data-goto="build">See what to avoid</a>`);
+  w.hidden = !msgs.length;
+  w.innerHTML = msgs.join("<br><br>");
 
   const s = state.settings;
   const lenHow = r.centerFed ? `${n1(r.halfWave / 2)} ft per leg. ${s.dipoleK} ÷ frequency; cut long and trim.` : `${s.dipoleK} ÷ frequency; cut long and trim. Beams: use the maker's dimensions.`;
@@ -182,8 +185,11 @@ function renderBuild(r) {
   }).join("");
 
   const aw = $("avoid-warning");
-  if (r.fit === "Poor") { aw.hidden = false; aw.textContent = `⚠ Your chosen antenna (${state.override}) is rated Poor for this goal.`; }
-  else aw.hidden = true;
+  const warns = [];
+  if (r.nvisTooHigh) warns.push(`⚠ ${r.band || state.freq.toFixed(3) + " MHz"} is too high for NVIS. Use 80, 60 or 40 m.`);
+  if (r.fit === "Poor") warns.push(`⚠ Your chosen antenna (${state.override}) is rated Poor for this goal.`);
+  aw.hidden = !warns.length;
+  aw.textContent = warns.join(" ");
   const avoid = Calc.avoidFor(r.goal.goal);
   $("avoid").innerHTML = avoid.length
     ? avoid.map((a) => `<li><strong>${esc(a.what)}</strong><span>${esc(a.why)}</span></li>`).join("")
@@ -308,6 +314,12 @@ function buildSettings() {
 
 // ---------- Cross-links ----------
 document.addEventListener("click", (e) => {
+  const sf = e.target.closest("[data-setfreq]");
+  if (sf) {
+    state.freq = Number(sf.dataset.setfreq); store.set("freq", state.freq);
+    $("freq").value = state.freq.toFixed(3); $("freq").setAttribute("aria-invalid", "false");
+    renderAll(); window.scrollTo({ top: 0 }); return;
+  }
   const a = e.target.closest("[data-goto]"); if (!a) return;
   e.preventDefault(); showTab(a.dataset.goto);
 });
