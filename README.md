@@ -1,39 +1,46 @@
-# HF Antenna & Transformer Planner
+# HF Antenna Planner
 
-An Excel workbook that picks an HF antenna, mounting height, feed method and feedpoint transformer (balun/unun) for your operating goal, then gives a build checklist and a list of things to avoid.
+Pick an HF antenna, mounting height, feed method and feedpoint transformer (balun/unun) for your operating goal. It also gives you a build checklist and a list of things to avoid.
 
-**[Download the workbook (antenna_selection_tool.xlsx)](antenna_selection_tool.xlsx?raw=true)**
+**Open the app: https://dkill-max.github.io/hf-antenna-planner/**
 
-Built by W4NEM. Works for any station: local/NVIS, medium range, DX, multiband, limited space/HOA, or portable.
+Works on phones, tablets and computers. Install it to your home screen and it works offline. By W4NEM.
 
-## Tabs
+## Install on a phone or tablet
+
+- **iPhone / iPad:** open the link in Safari, tap **Share**, then **Add to Home Screen**.
+- **Android:** open the link in Chrome, tap **⋮**, then **Install app** (or **Add to Home screen**).
+
+## What's in the app
 
 | Tab | What it does |
 |---|---|
-| How to Use | Work instruction. Start here. |
-| Antenna Selector | Pick goal, frequency and (optionally) antenna type. Shows the full recommendation. |
-| Build Plan | Step-by-step build checklist with a Done? column. |
-| What to Avoid | Antennas and practices to avoid for your goal, with a warning if your choice is a poor fit. |
-| Transformer Calculator | Stand-alone balun/unun sizing for any feed method or measured impedance. |
-| Band Heights | Center frequencies and height targets for 80 / 60 / 40 m NVIS. |
-| Band Calculations | Per-band wire lengths, heights, reflector length and estimated SWR for 80 / 60 / 40 m. |
+| Antenna | Pick a goal and frequency (and optionally an antenna type). Shows the full recommendation. |
+| Prop | Live solar flux, sunspots, Kp/A index and X-ray level, a band outlook, and live foF2/MUF maps for checking NVIS. Updates automatically. |
+| Build | Build checklist you can tick off, what to avoid for your goal, and your own station notes. |
+| Balun | Transformer calculator for any feed method or measured impedance. |
+| NVIS | Per-band wire lengths, heights, reflector length and balun spec for 80 / 60 / 40 m. |
+| Station | Your power, impedance and constants; install help; how to use; the spreadsheet download. |
 
-## Quick start
+Settings, checklist progress and notes are saved on each device. Nothing is sent anywhere.
 
-1. **Transformer Calculator:** enter station power, safety margin, system impedance and acceptable SWR (once).
-2. **Antenna Selector:** choose a goal from the dropdown in B5 and enter your operating frequency in B6.
-3. Read the recommendation. The yellow Summary row is the one-line answer.
-4. Check **What to Avoid**, then work through **Build Plan**.
-5. After install, measure feedpoint impedance with an analyzer and enter it to confirm the transformer.
+Propagation data: solar and geomagnetic numbers come from the [NOAA Space Weather Prediction Center](https://www.swpc.noaa.gov/); foF2 and MUF maps come from [prop.kc2g.com](https://prop.kc2g.com/), using ionosonde data from GIRO and INGV. The band outlook is a rule-of-thumb estimate (logic in `prop.js`).
 
-## Requirements
+## Spreadsheet version
 
-Microsoft Excel or LibreOffice Calc. The dropdowns and formulas do not work in GitHub's file preview or in some mobile viewers. Download the file and open it in a spreadsheet app.
+**[Download antenna_selection_tool.xlsx](antenna_selection_tool.xlsx?raw=true)** — the same planner as an Excel workbook (Microsoft 365 or Excel 2021+).
+
+## Updating the app
+
+- Reference data (goals, antennas, feed methods, avoid list) is in `data.js`.
+- Calculations are in `calc.js`; propagation is in `prop.js`; the screens are in `app.js`, `index.html` and `app.css`.
+- **When you change any file, also change the version in `sw.js` (for example `hfap-v1.1.0` → `hfap-v1.1.1`).** That tells installed copies to download the update. Users then see a "new version is ready" bar.
 
 ## Notes
 
 - All lengths, heights and impedances are rules of thumb. Cut wire long, then trim for SWR.
-- Measured impedances give the most reliable transformer choice.
 - Keep antennas clear of power lines. End-fed wire ends carry high RF voltage. Observe RF exposure limits at high power.
+
+Fonts: Barlow and Barlow Condensed (SIL Open Font License, see `fonts/OFL-Barlow.txt`).
 
 73 de W4NEM

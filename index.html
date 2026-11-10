@@ -2,93 +2,260 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>HF Antenna Planner</title>
-<meta name="description" content="Excel workbook that picks an HF antenna, height, feed method and balun/unun for your operating goal. By W4NEM.">
-<style>
-  :root {
-    --bg: #f6f7f9; --card: #ffffff; --text: #1b2430; --muted: #5a6573;
-    --accent: #1f4e78; --accent-text: #ffffff; --border: #dde2e8;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #10151c; --card: #18202a; --text: #e6ebf1; --muted: #9aa6b4;
-      --accent: #4f8cc9; --accent-text: #0b1118; --border: #2a3542;
-    }
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  }
-  main { max-width: 760px; margin: 0 auto; padding: 40px 16px 56px; }
-  .call { color: var(--muted); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 6px; }
-  h1 { font-size: 30px; line-height: 1.2; margin: 0 0 12px; }
-  .lede { color: var(--muted); margin: 0 0 24px; }
-  .btn {
-    display: inline-block; background: var(--accent); color: var(--accent-text);
-    text-decoration: none; font-weight: 600; padding: 12px 20px; border-radius: 8px;
-  }
-  .btn:hover { filter: brightness(1.08); }
-  .note { font-size: 14px; color: var(--muted); margin: 10px 0 32px; }
-  section { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
-  h2 { font-size: 18px; margin: 0 0 12px; }
-  table { width: 100%; border-collapse: collapse; font-size: 15px; }
-  td { padding: 8px 0; border-top: 1px solid var(--border); vertical-align: top; }
-  tr:first-child td { border-top: 0; }
-  td:first-child { font-weight: 600; width: 38%; padding-right: 12px; }
-  ol { margin: 0; padding-left: 20px; }
-  li { margin-bottom: 6px; }
-  footer { color: var(--muted); font-size: 14px; margin-top: 28px; }
-  @media (max-width: 520px) {
-    td { display: block; width: 100% !important; padding: 2px 0; }
-    tr td:first-child { padding-top: 10px; }
-  }
-</style>
+<meta name="description" content="Pick an HF antenna, mounting height, feed method and balun/unun for your operating goal. Works offline. By W4NEM.">
+<meta name="theme-color" content="#17324d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Antenna Planner">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="app.css">
 </head>
 <body>
-<main>
-  <p class="call">W4NEM</p>
-  <h1>HF Antenna &amp; Transformer Planner</h1>
-  <p class="lede">An Excel workbook that picks an HF antenna, mounting height, feed method and feedpoint transformer (balun/unun) for your operating goal, then gives you a build checklist and a list of things to avoid.</p>
+<header class="topbar">
+  <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 9v19M3 28h26" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".55"/><path d="M5 20 16 8l11 12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><rect x="13" y="5" width="6" height="5" rx="1.2" fill="currentColor"/><circle cx="5" cy="20" r="1.8" fill="currentColor"/><circle cx="27" cy="20" r="1.8" fill="currentColor"/></svg>
+  <h1>HF Antenna Planner</h1>
+</header>
 
-  <a class="btn" href="antenna_selection_tool.xlsx" download>Download the workbook (.xlsx)</a>
-  <p class="note">Open it in Microsoft Excel or LibreOffice Calc. The dropdowns and formulas don't work in browser previews.</p>
+<main id="main">
+  <!-- ANTENNA -->
+  <section id="tab-antenna" class="tab" aria-labelledby="nav-antenna">
+    <div class="display" role="group" aria-label="Frequency and answer">
+      <div class="display-top">
+        <span id="d-band" class="d-band">20 m</span>
+        <span id="d-goal" class="d-goal"></span>
+      </div>
+      <label class="d-freq">
+        <span class="visually-hidden">Operating frequency in MHz</span>
+        <input id="freq" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="14.200" aria-describedby="freq-help">
+        <span class="d-unit" aria-hidden="true">MHz</span>
+      </label>
+      <p id="freq-help" class="d-help">Tap the frequency to change it</p>
+      <p id="d-answer" class="d-answer" aria-live="polite"></p>
+    </div>
 
-  <section>
-    <h2>Quick start</h2>
-    <ol>
-      <li><strong>Transformer Calculator:</strong> enter station power, safety margin, system impedance and acceptable SWR (once).</li>
-      <li><strong>Antenna Selector:</strong> pick a goal from the dropdown and enter your operating frequency.</li>
-      <li>Read the recommendation. The yellow Summary row is the one-line answer.</li>
-      <li>Check <strong>What to Avoid</strong>, then work through <strong>Build Plan</strong>.</li>
-      <li>After install, measure feedpoint impedance with an analyzer and enter it to confirm the transformer.</li>
-    </ol>
+    <fieldset class="block">
+      <legend>What do you want to work?</legend>
+      <div id="goals" class="chips"></div>
+    </fieldset>
+
+    <div class="block fields">
+      <label class="field">
+        <span>Antenna</span>
+        <select id="override"></select>
+      </label>
+      <label class="field">
+        <span>Measured feedpoint Z (Ω)</span>
+        <input id="measZ" type="number" inputmode="decimal" min="1" step="any" placeholder="Leave blank for typical">
+      </label>
+    </div>
+
+    <p id="fit-warning" class="warning" hidden></p>
+
+    <div class="block">
+      <h2>Recommendation</h2>
+      <dl id="rec" class="spec"></dl>
+    </div>
   </section>
 
-  <section>
-    <h2>What's inside</h2>
-    <table>
-      <tr><td>How to Use</td><td>Work instruction. Start here.</td></tr>
-      <tr><td>Antenna Selector</td><td>Goal, frequency and optional antenna type in; full recommendation out.</td></tr>
-      <tr><td>Build Plan</td><td>Step-by-step checklist with a Done? column.</td></tr>
-      <tr><td>What to Avoid</td><td>Poor choices for your goal, with a warning if your pick is a poor fit.</td></tr>
-      <tr><td>Transformer Calculator</td><td>Balun/unun sizing for any feed method or measured impedance.</td></tr>
-      <tr><td>Band Heights</td><td>Center frequencies and height targets for 80 / 60 / 40 m NVIS.</td></tr>
-      <tr><td>Band Calculations</td><td>Per-band wire lengths, heights, reflector length and estimated SWR.</td></tr>
-    </table>
+  <!-- PROPAGATION -->
+  <section id="tab-prop" class="tab" aria-labelledby="nav-prop" hidden>
+    <div class="block">
+      <h2>Band conditions now</h2>
+      <p id="prop-headline" class="prop-headline" aria-live="polite">Loading the latest solar data…</p>
+      <dl id="prop-stats" class="stats"></dl>
+      <p id="prop-status" class="muted prop-status"></p>
+      <button id="prop-refresh" class="btn-quiet" type="button">Refresh now</button>
+    </div>
+
+    <div class="block">
+      <h2>Band outlook</h2>
+      <div class="table-wrap">
+        <table class="outlook">
+          <thead><tr><th scope="col">Bands</th><th scope="col" id="col-day">Day</th><th scope="col" id="col-night">Night</th></tr></thead>
+          <tbody id="prop-outlook"></tbody>
+        </table>
+      </div>
+      <p class="muted small">Estimate from solar flux, Kp and X-ray flux. Real conditions vary by path and season.</p>
+    </div>
+
+    <div class="block">
+      <h2>NVIS right now</h2>
+      <p>Find your area on the map and read the foF2 contour. NVIS works on bands below that number:</p>
+      <ul class="plain nvis-rule">
+        <li><strong>80 m</strong> needs foF2 above about 4.0 MHz</li>
+        <li><strong>60 m</strong> needs foF2 above about 5.4 MHz</li>
+        <li><strong>40 m</strong> needs foF2 above about 7.3 MHz</li>
+      </ul>
+      <figure class="map">
+        <a id="map-fof2-link" href="https://prop.kc2g.com/fof2/" target="_blank" rel="noopener">
+          <img id="map-fof2" alt="World map of the critical frequency foF2, in MHz, from ionosonde data" width="1526" height="905" loading="lazy">
+        </a>
+        <figcaption>foF2 (critical frequency), live from prop.kc2g.com. Tap to open full size.</figcaption>
+      </figure>
+      <details class="advanced">
+        <summary>Distance contacts: MUF map</summary>
+        <figure class="map">
+          <a href="https://prop.kc2g.com/" target="_blank" rel="noopener">
+            <img id="map-muf" alt="World map of the maximum usable frequency for 3000 km paths, in MHz" width="1526" height="905" loading="lazy">
+          </a>
+          <figcaption>MUF for 3,000 km paths. Bands below this number can reach about 3,000 km from that area.</figcaption>
+        </figure>
+      </details>
+      <p id="map-offline" class="muted" hidden>The maps need an internet connection.</p>
+    </div>
+
+    <p class="colophon">Solar data: NOAA Space Weather Prediction Center. Maps: prop.kc2g.com, with ionosonde data from GIRO and INGV.</p>
   </section>
 
-  <section>
-    <h2>Good to know</h2>
-    <ol>
-      <li>All lengths, heights and impedances are rules of thumb. Cut wire long, then trim for SWR.</li>
-      <li>Measured impedances give the most reliable transformer choice.</li>
-      <li>Keep antennas clear of power lines. End-fed wire ends carry high RF voltage. Observe RF exposure limits at high power.</li>
-    </ol>
+  <!-- BUILD -->
+  <section id="tab-build" class="tab" aria-labelledby="nav-build" hidden>
+    <div class="block">
+      <h2>Build plan</h2>
+      <p id="build-for" class="muted"></p>
+      <ol id="checklist" class="checklist"></ol>
+      <button id="clear-checks" class="btn-quiet" type="button">Clear checklist</button>
+    </div>
+    <div class="block">
+      <h2>What to avoid</h2>
+      <p id="avoid-warning" class="warning" hidden></p>
+      <ul id="avoid" class="avoid"></ul>
+    </div>
+    <div class="block">
+      <h2><label for="notes">My station notes</label></h2>
+      <textarea id="notes" rows="4" placeholder="Saved on this device only. Example: LMR-400 on hand; keep wires clear of the Yagi."></textarea>
+    </div>
   </section>
 
-  <footer>73 de W4NEM</footer>
+  <!-- BALUN -->
+  <section id="tab-balun" class="tab" aria-labelledby="nav-balun" hidden>
+    <div class="block">
+      <h2>Transformer calculator</h2>
+      <p class="muted">Size a balun or unun for any feed method. A measured impedance overrides the typical value.</p>
+      <div class="fields">
+        <label class="field">
+          <span>Feed method</span>
+          <select id="tc-method"></select>
+        </label>
+        <label class="field">
+          <span>Measured feedpoint Z (Ω)</span>
+          <input id="tc-z" type="number" inputmode="decimal" min="1" step="any" placeholder="Leave blank for typical">
+        </label>
+        <label class="field">
+          <span>Lowest operating frequency (MHz)</span>
+          <input id="tc-low" type="number" inputmode="decimal" min="0.1" step="any" value="3.5">
+        </label>
+      </div>
+    </div>
+    <div class="result-line" id="tc-answer" aria-live="polite"></div>
+    <div class="block">
+      <dl id="tc-results" class="spec"></dl>
+    </div>
+    <div class="block">
+      <h2>Standard ratios</h2>
+      <div class="table-wrap">
+        <table class="ratios">
+          <thead><tr><th scope="col">Ratio</th><th scope="col">Turns</th><th scope="col">SWR</th><th scope="col">Typical use</th></tr></thead>
+          <tbody id="tc-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- NVIS -->
+  <section id="tab-nvis" class="tab" aria-labelledby="nav-nvis" hidden>
+    <div class="block">
+      <h2>NVIS band calculator</h2>
+      <p class="muted">Low inverted-V or fan dipole for 0–300 mi. Heights of 0.1–0.25 λ trade DX for a straight-up pattern. All lengths are starting points: cut long and trim.</p>
+      <p class="muted">To see which NVIS bands are open right now, check <a href="#" data-goto="prop">Prop</a>.</p>
+    </div>
+    <div id="nvis-bands"></div>
+    <p class="note-line">Fan dipole with all bands on one feedpoint: use one shared 1:1 current balun.</p>
+    <div class="block">
+      <h2>Feedpoint balun spec</h2>
+      <dl id="nvis-spec" class="spec"></dl>
+    </div>
+    <div class="block">
+      <h2>If you feed it differently</h2>
+      <dl id="nvis-alt" class="spec"></dl>
+    </div>
+  </section>
+
+  <!-- MORE -->
+  <section id="tab-more" class="tab" aria-labelledby="nav-more" hidden>
+    <div class="block">
+      <h2>My station</h2>
+      <p class="muted">Used by every calculator. Saved on this device.</p>
+      <div class="fields" id="settings-main"></div>
+      <details class="advanced">
+        <summary>Constants</summary>
+        <div class="fields" id="settings-adv"></div>
+      </details>
+      <button id="reset-settings" class="btn-quiet" type="button">Reset to defaults</button>
+    </div>
+
+    <div class="block" id="install-block">
+      <h2>Install on your phone or tablet</h2>
+      <button id="install-btn" class="btn" type="button" hidden>Install app</button>
+      <p id="install-ios" class="muted">iPhone and iPad: open this page in Safari, tap Share, then Add to Home Screen.</p>
+      <p id="install-android" class="muted">Android: in Chrome, tap ⋮ then Install app (or Add to Home screen).</p>
+      <p class="muted">Once installed, it works without an internet connection.</p>
+    </div>
+
+    <div class="block">
+      <h2>How to use</h2>
+      <ol class="steps">
+        <li>Set your station power and system impedance on this tab (once).</li>
+        <li>On Antenna, pick what you want to work and enter your main frequency.</li>
+        <li>Optional: choose a specific antenna to see how well it fits the goal.</li>
+        <li>Read the recommendation. The amber display shows the one-line answer.</li>
+        <li>Open Build to check what to avoid, then tick off the build plan.</li>
+        <li>After install, measure the feedpoint impedance with an analyzer and enter it to confirm the transformer. Trim wire for lowest SWR.</li>
+        <li>For an 80/60/40 m NVIS build, use the NVIS tab for per-band lengths.</li>
+      </ol>
+    </div>
+
+    <div class="block">
+      <h2>Safety</h2>
+      <ul class="plain">
+        <li>Keep antennas clear of power lines.</li>
+        <li>End-fed wire ends carry high RF voltage.</li>
+        <li>Observe RF exposure limits at high power.</li>
+        <li>All lengths, heights and impedances are rules of thumb. Measured values are more reliable.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>Spreadsheet version</h2>
+      <p class="muted">The same planner as an Excel workbook (Microsoft 365 or Excel 2021+).</p>
+      <a class="btn" href="antenna_selection_tool.xlsx" download>Download the workbook</a>
+    </div>
+
+    <p class="colophon">73 de W4NEM · App version <span id="app-version"></span></p>
+  </section>
 </main>
+
+<div id="update-bar" class="update-bar" hidden>
+  <span>A new version is ready.</span>
+  <button id="update-btn" type="button">Reload</button>
+</div>
+
+<nav class="tabbar" aria-label="Sections">
+  <button id="nav-antenna" data-tab="antenna" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v15M2 21h20M3 15l9-10 9 10"/></svg><span>Antenna</span></button>
+  <button id="nav-prop" data-tab="prop"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg><span>Prop</span></button>
+  <button id="nav-build" data-tab="build"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h3m4 0h9M4 12h3m4 0h9M4 18h3m4 0h9"/></svg><span>Build</span></button>
+  <button id="nav-balun" data-tab="balun"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/></svg><span>Balun</span></button>
+  <button id="nav-nvis" data-tab="nvis"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M6 20c0-8 12-8 12 0M9 20c0-4 6-4 6 0"/></svg><span>NVIS</span></button>
+  <button id="nav-more" data-tab="more"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg><span>Station</span></button>
+</nav>
+
+<script src="data.js"></script>
+<script src="calc.js"></script>
+<script src="prop.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
