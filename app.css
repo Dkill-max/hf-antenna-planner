@@ -91,22 +91,49 @@ main { max-width: 720px; margin: 0 auto; }
 .d-band { font-weight: 700; color: var(--amber-ink); font-size: 20px; }
 .d-goal { text-align: right; }
 .d-freq {
-  display: flex; align-items: baseline; gap: 8px;
-  padding: 0 14px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 14px 0;
 }
+/* The frequency reads as an editable field: light inset, dashed edge, pencil */
+.d-field {
+  flex: 1; min-width: 0; position: relative; display: block; cursor: text;
+  background: rgba(255, 255, 255, .38);
+  border: 2px dashed rgba(43, 26, 0, .45);
+  border-radius: 10px;
+}
+.d-field:focus-within { background: rgba(255, 255, 255, .6); border-style: solid; border-color: var(--amber-ink); }
 .d-freq input {
-  flex: 1; min-width: 0;
-  font: 700 clamp(56px, 18vw, 84px)/1 var(--font-cond);
+  width: 100%;
+  font: 700 clamp(52px, 16vw, 80px)/1 var(--font-cond);
   font-variant-numeric: tabular-nums;
   letter-spacing: .02em;
   color: var(--amber-ink);
-  background: transparent; border: 0; padding: 4px 0 0;
-  border-bottom: 2px dashed transparent;
+  background: transparent; border: 0;
+  padding: 6px 48px 4px 10px;
 }
-.d-freq input:focus, .d-freq input:focus-visible { outline: none; border-bottom-color: var(--amber-ink); }
+.d-freq input:focus, .d-freq input:focus-visible { outline: none; box-shadow: none; }
+.d-freq input::selection { background: var(--amber-ink); color: var(--amber); }
 .d-freq input[aria-invalid="true"] { color: #8f1d12; }
+.d-pencil {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  width: 28px; height: 28px; pointer-events: none;
+  fill: none; stroke: var(--amber-ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: .75;
+}
+.d-field:focus-within .d-pencil { opacity: 0; }
 .d-unit { font: 600 24px/1 var(--font-cond); color: var(--amber-dim); }
-.d-help { margin: 0; padding: 2px 14px 8px; font-size: 13px; color: var(--amber-dim); }
+.d-help { margin: 0; padding: 6px 14px 6px; font-size: 14px; font-weight: 600; color: var(--amber-ink); }
+.d-bands {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px;
+  padding: 0 14px 12px;
+  background: var(--amber);
+}
+.d-bands button {
+  min-height: 40px; padding: 0 4px;
+  font: 700 17px/1 var(--font-cond); color: var(--amber-ink);
+  background: transparent; border: 1.5px solid rgba(43, 26, 0, .45); border-radius: 999px; cursor: pointer;
+}
+.d-bands button[aria-pressed="true"] { background: var(--amber-ink); color: var(--amber); border-color: var(--amber-ink); }
+.d-bands button:focus-visible { outline: 3px solid var(--amber-ink); outline-offset: 1px; }
 .d-answer {
   margin: 0; padding: 10px 14px 12px;
   border-top: 1px solid rgba(43, 26, 0, .25);

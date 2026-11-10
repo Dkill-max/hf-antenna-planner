@@ -1,7 +1,7 @@
 // HF Antenna Planner — UI
 "use strict";
 
-const APP_VERSION = "1.1.0";
+const APP_VERSION = "1.1.1";
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const n0 = (x) => Math.round(x).toLocaleString("en-US");
@@ -87,7 +87,18 @@ function buildAntennaControls() {
   f.addEventListener("focus", () => f.select());
   f.addEventListener("blur", () => { f.value = state.freq.toFixed(3); f.setAttribute("aria-invalid", "false"); renderAll(); });
   f.addEventListener("keydown", (e) => { if (e.key === "Enter") f.blur(); });
+
+  $("band-picks").innerHTML = BAND_PICKS.map(([b, mhz]) =>
+    `<button type="button" data-mhz="${mhz}" aria-label="${b} meters, ${mhz} MHz">${b} m</button>`).join("");
+  $("band-picks").addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    state.freq = Number(b.dataset.mhz); store.set("freq", state.freq);
+    f.value = state.freq.toFixed(3); f.setAttribute("aria-invalid", "false");
+    renderAll();
+  });
 }
+
+const HELP_TEXT = "Tap the number to type a frequency, or pick a band";
 
 function selectorResult() {
   return Calc.selector({ goal: state.goal, freq: state.freq, override: state.override, measuredZ: parseNum(state.measZ) }, state.settings);
@@ -96,8 +107,10 @@ function selectorResult() {
 function renderAntenna(r) {
   $("d-band").textContent = r.band || "Outside the ham bands";
   $("d-goal").textContent = r.goal.goal;
-  if ($("freq").getAttribute("aria-invalid") !== "true")
-    $("freq-help").textContent = `λ ${n1(r.lambda)} ft · tap the frequency to change it`;
+  if ($("freq").getAttribute("aria-invalid") !== "true") $("freq-help").textContent = HELP_TEXT;
+  document.querySelectorAll("#band-picks button").forEach((b) => {
+    const on = r.band !== null && r.band === Calc.hamBand(Number(b.dataset.mhz));
+    b.setAttribute("aria-pressed", on ? "true" : "false");  });
   $("d-answer").innerHTML = `<strong>${esc(r.antenna)}</strong><br>${esc(r.heightShort)}${r.heightShort.endsWith("ft") ? " high" : ""} · ${esc(r.transformer)}` +
     (r.fit === "Poor" ? `<br>⚠ Poor fit for this goal` : "");
 

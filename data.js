@@ -195,6 +195,12 @@ const HAM_BANDS = [
   ["12 m", 24.89, 24.99], ["10 m", 28.0, 29.7], ["6 m", 50.0, 54.0]
 ];
 
+// One-tap band buttons on the frequency display (typical center frequencies, MHz).
+const BAND_PICKS = [
+  ["160", 1.9], ["80", 3.75], ["60", 5.357], ["40", 7.15], ["30", 10.125], ["20", 14.2],
+  ["17", 18.1], ["15", 21.2], ["12", 24.94], ["10", 28.4]
+];
+
 const DEFAULT_SETTINGS = {
   power: 1500,          // station power, W PEP
   margin: 2,            // transformer power safety margin (×)

@@ -29,12 +29,16 @@
         <span id="d-band" class="d-band">20 m</span>
         <span id="d-goal" class="d-goal"></span>
       </div>
-      <label class="d-freq">
-        <span class="visually-hidden">Operating frequency in MHz</span>
-        <input id="freq" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="14.200" aria-describedby="freq-help">
+      <div class="d-freq">
+        <label class="d-field">
+          <span class="visually-hidden">Operating frequency in MHz</span>
+          <input id="freq" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="14.200" aria-describedby="freq-help">
+          <svg class="d-pencil" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg>
+        </label>
         <span class="d-unit" aria-hidden="true">MHz</span>
-      </label>
-      <p id="freq-help" class="d-help">Tap the frequency to change it</p>
+      </div>
+      <p id="freq-help" class="d-help">Tap the number to type a frequency, or pick a band</p>
+      <div id="band-picks" class="d-bands" role="group" aria-label="Pick a band"></div>
       <p id="d-answer" class="d-answer" aria-live="polite"></p>
     </div>
 

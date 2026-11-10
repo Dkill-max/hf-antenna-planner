@@ -1,5 +1,5 @@
 // Offline support. Bump CACHE when any file changes so phones pick up the update.
-const CACHE = "hfap-v1.1.0";
+const CACHE = "hfap-v1.1.1";
 const FILES = [
   "./",
   "index.html",
