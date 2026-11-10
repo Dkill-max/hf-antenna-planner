@@ -195,6 +195,10 @@ const HAM_BANDS = [
   ["12 m", 24.89, 24.99], ["10 m", 28.0, 29.7], ["6 m", 50.0, 54.0]
 ];
 
+// Anonymous visit counter (goatcounter.com). Put your GoatCounter code here, e.g. "w4nem".
+// Leave it empty ("") to turn counting off.
+const ANALYTICS_CODE = "w4nem";
+
 // NVIS needs a band below the critical frequency (foF2); above 40 m it rarely works.
 const NVIS_GOAL = "Local / regional (NVIS)";
 const NVIS_MAX_MHZ = 7.3;

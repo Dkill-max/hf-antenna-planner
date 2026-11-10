@@ -1,7 +1,7 @@
 // HF Antenna Planner — UI
 "use strict";
 
-const APP_VERSION = "1.2.0";
+const APP_VERSION = "1.2.1";
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const n0 = (x) => Math.round(x).toLocaleString("en-US");
@@ -47,6 +47,28 @@ function showTab(name) {
   });
   window.scrollTo(0, 0);
   if (name === "prop") refreshProp(false);
+  trackTab(name);
+}
+
+// ---------- Anonymous visit counter (GoatCounter, no cookies) ----------
+let pendingTab = null;
+function trackTab(name) {
+  if (!ANALYTICS_CODE) return;
+  const gc = window.goatcounter;
+  if (gc && typeof gc.count === "function") {
+    const label = name === "more" ? "station" : name; // match the tab names people see
+    try { gc.count({ path: "/" + label, title: label.charAt(0).toUpperCase() + label.slice(1) }); } catch { /* ignore */ }
+  } else pendingTab = name;
+}
+function loadAnalytics() {
+  if (!ANALYTICS_CODE || location.protocol === "file:") return;
+  window.goatcounter = { no_onload: true };
+  const s = document.createElement("script");
+  s.async = true;
+  s.src = "https://gc.zgo.at/count.js";
+  s.dataset.goatcounter = `https://${ANALYTICS_CODE}.goatcounter.com/count`;
+  s.onload = () => { if (pendingTab) { const t = pendingTab; pendingTab = null; trackTab(t); } };
+  document.head.appendChild(s);
 }
 document.querySelectorAll(".tabbar button").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
 
@@ -418,6 +440,7 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden && st
 window.addEventListener("online", () => { if (state.tab === "prop") refreshProp(true); });
 
 // ---------- Start ----------
+loadAnalytics();
 buildAntennaControls();
 buildBalunControls();
 buildNvis();

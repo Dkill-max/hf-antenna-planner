@@ -22,7 +22,7 @@ Works on phones, tablets and computers. Install it to your home screen and it wo
 | NVIS | Per-band wire lengths, heights, reflector length and balun spec for 80 / 60 / 40 m. |
 | Station | Your power, impedance and constants; install help; how to use; the spreadsheet download. |
 
-Settings, checklist progress and notes are saved on each device. Nothing is sent anywhere.
+Settings, checklist progress and notes are saved on each device and never leave it. The app counts anonymous visits and which tabs are opened using [GoatCounter](https://www.goatcounter.com/) (no cookies, no personal data). To turn counting off, set `ANALYTICS_CODE = ""` in `data.js`.
 
 Propagation data: solar and geomagnetic numbers come from the [NOAA Space Weather Prediction Center](https://www.swpc.noaa.gov/); foF2 and MUF maps come from [prop.kc2g.com](https://prop.kc2g.com/), using ionosonde data from GIRO and INGV. The band outlook is a rule-of-thumb estimate (logic in `prop.js`).
 
